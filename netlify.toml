@@ -1,11 +1,19 @@
+# netlify.toml
+
 [build]
-  base = "frontend/just-built-frontend"
-  command = "npm run build"
+  # Directory containing the serverless functions
+  functions = "netlify/functions"
+  # The command to build the React frontend
+  command = "cd frontend/just-built-frontend && npm run build"
+  # The directory to publish, containing the built static files
   publish = "frontend/just-built-frontend/build"
 
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+[dev]
+  # When running `netlify dev`, proxy requests to the React dev server
+  targetPort = 3000
 
-[[plugins]]
-  package = "@netlify/plugin-functions-install-core"
+# This rule proxies all calls from /api/* to your Netlify functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
